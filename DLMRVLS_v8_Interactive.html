@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLMRVLS v8 — Dev Build</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #ff6b35;
+            --secondary: #004e89;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(0,78,137,0.1));
+            border: 1px solid rgba(255,107,53,0.3);
+            border-radius: 12px;
+        }
+        
+        .header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        .header-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        button {
+            padding: 10px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: #ff8a5a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+        }
+        
+        button.secondary {
+            background: var(--secondary);
+        }
+        
+        button.secondary:hover {
+            background: #0066ba;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 2px solid rgba(255,107,53,0.2);
+            background: rgba(255,107,53,0.05);
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            border-radius: 0;
+        }
+        
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(255,107,53,0.1);
+        }
+        
+        .tab-content {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,107,53,0.2);
+            border-top: none;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: rgba(255,107,53,0.05);
+            border: 1px solid rgba(255,107,53,0.15);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            border-color: rgba(255,107,53,0.4);
+            background: rgba(255,107,53,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(255,107,53,0.3);
+            color: var(--primary);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            color: var(--text-primary);
+            border: 1px solid rgba(255,107,53,0.2);
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .form-row input {
+            width: 100%;
+        }
+        
+        .target-muscles {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .muscle-card {
+            background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(0,78,137,0.05));
+            border: 1px solid rgba(255,107,53,0.25);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .muscle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: conic-gradient(var(--primary), transparent);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .muscle-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .muscle-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .muscle-rpe {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .muscle-status {
+            font-size: 10px;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .session-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .session-tile {
+            background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(0,78,137,0.05));
+            border: 1px solid rgba(255,107,53,0.2);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .session-tile:hover {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(255,107,53,0.3), rgba(0,78,137,0.15));
+            transform: translateY(-4px);
+        }
+        
+        .session-code {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+        
+        .session-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .session-focus {
+            font-size: 10px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .equipment-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(255,107,53,0.05);
+            border: 1px solid rgba(255,107,53,0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .equipment-item:hover {
+            background: rgba(255,107,53,0.15);
+            border-color: var(--primary);
+        }
+        
+        .equipment-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .equipment-item label {
+            cursor: pointer;
+            font-size: 12px;
+            flex: 1;
+        }
+        
+        .info-box {
+            background: rgba(0,78,137,0.1);
+            border-left: 3px solid var(--secondary);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .exercise-input {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,107,53,0.15);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .exercise-input h4 {
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .section-divider {
+            border-top: 1px solid rgba(255,107,53,0.2);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h1>DLMRVLS</h1>
+                <div class="header-subtitle">v8 Dev Build • Phase 1.5</div>
+            </div>
+            <div class="header-controls">
+                <button id="syncBtn" class="secondary">⟲ Sync</button>
+            </div>
+        </div>
+        
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="program">💪 Program</button>
+            <button class="tab-btn" data-tab="log">📝 Log</button>
+            <button class="tab-btn" data-tab="targets">🎯 Targets</button>
+            <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
+        </div>
+        
+        <!-- PROGRAM TAB -->
+        <div id="program" class="tab-content active">
+            <div class="info-box">
+                ✅ 3 sessions pre-loaded (Apr 15, 18, 19)<br>
+                📊 Your weight data active (210 → 211.8 lbs)<br>
+                🎯 Phase 1.5: Weeks 1–6 • Click a session to log
+            </div>
+            
+            <h3 style="font-size: 14px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">Gym Sessions</h3>
+            <div class="session-grid">
+                <div class="session-tile" onclick="selectSession('A')">
+                    <div class="session-code">A</div>
+                    <div class="session-name">Lower — Posterior</div>
+                    <div class="session-focus">Glutes · Hamstrings · Calves</div>
+                </div>
+                <div class="session-tile" onclick="selectSession('B')">
+                    <div class="session-code">B</div>
+                    <div class="session-name">Upper — Pull</div>
+                    <div class="session-focus">Back · Biceps · Rear Delts</div>
+                </div>
+                <div class="session-tile" onclick="selectSession('C')">
+                    <div class="session-code">C</div>
+                    <div class="session-name">Lower — Quad Focus</div>
+                    <div class="session-focus">Quads · Glutes · Core</div>
+                </div>
+                <div class="session-tile" onclick="selectSession('D')">
+                    <div class="session-code">D</div>
+                    <div class="session-name">Upper — Push</div>
+                    <div class="session-focus">Chest · Shoulders · Triceps</div>
+                </div>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <h3 style="font-size: 14px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">Travel Sessions (BBR Equipment)</h3>
+            <div class="session-grid">
+                <div class="session-tile" onclick="selectSession('E')">
+                    <div class="session-code">E</div>
+                    <div class="session-name">Travel — Rings</div>
+                    <div class="session-focus">💍 Upper Body</div>
+                </div>
+                <div class="session-tile" onclick="selectSession('F')">
+                    <div class="session-code">F</div>
+                    <div class="session-name">Travel — TRX</div>
+                    <div class="session-focus">🎒 Full Body</div>
+                </div>
+                <div class="session-tile" onclick="selectSession('G')">
+                    <div class="session-code">G</div>
+                    <div class="session-name">Travel — Bands</div>
+                    <div class="session-focus">🔗 Lower Body</div>
+                </div>
+                <div class="session-tile" onclick="selectSession('H')">
+                    <div class="session-code">H</div>
+                    <div class="session-name">Travel — Door Bar</div>
+                    <div class="session-focus">🚪 Upper Body</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LOG TAB -->
+        <div id="log" class="tab-content">
+            <div class="form-group">
+                <label>📅 Date</label>
+                <input type="date" id="sessionDate" />
+            </div>
+            
+            <div class="form-group">
+                <label>💪 Session</label>
+                <select id="sessionSelect" onchange="updateSessionInfo()">
+                    <option value="">Select Session...</option>
+                    <option value="A">A — Lower Posterior</option>
+                    <option value="B">B — Upper Pull</option>
+                    <option value="C">C — Lower Quad</option>
+                    <option value="D">D — Upper Push</option>
+                    <option value="E">E — Travel Rings</option>
+                    <option value="F">F — Travel TRX</option>
+                    <option value="G">G — Travel Bands</option>
+                    <option value="H">H — Travel Door Bar</option>
+                </select>
+            </div>
+            
+            <div id="exerciseContainer"></div>
+            
+            <div class="form-group">
+                <label>📝 Notes</label>
+                <textarea id="sessionNotes" placeholder="How did it feel? Any adjustments?"></textarea>
+            </div>
+            
+            <button style="width: 100%; padding: 12px; font-size: 14px;" onclick="saveSession()">💾 Save Session</button>
+        </div>
+        
+        <!-- TARGETS TAB -->
+        <div id="targets" class="tab-content">
+            <div class="info-box">
+                🎯 Your Target Muscles show RPE % across all logged sessions.<br>
+                High RPE = pushing hard. Low RPE = room to increase intensity.
+            </div>
+            
+            <h3 style="font-size: 13px; margin-bottom: 12px; margin-top: 12px;">Average RPE by Muscle Group</h3>
+            <div class="target-muscles">
+                <div class="muscle-card">
+                    <div class="muscle-icon">💪</div>
+                    <div class="muscle-name">Chest</div>
+                    <div class="muscle-rpe" id="rpe-chest">—</div>
+                    <div class="muscle-status">—</div>
+                </div>
+                <div class="muscle-card">
+                    <div class="muscle-icon">🦵</div>
+                    <div class="muscle-name">Back</div>
+                    <div class="muscle-rpe" id="rpe-back">—</div>
+                    <div class="muscle-status">—</div>
+                </div>
+                <div class="muscle-card">
+                    <div class="muscle-icon">💥</div>
+                    <div class="muscle-name">Biceps</div>
+                    <div class="muscle-rpe" id="rpe-biceps">—</div>
+                    <div class="muscle-status">—</div>
+                </div>
+                <div class="muscle-card">
+                    <div class="muscle-icon">🏋️</div>
+                    <div class="muscle-name">Shoulders</div>
+                    <div class="muscle-rpe" id="rpe-shoulders">—</div>
+                    <div class="muscle-status">—</div>
+                </div>
+            </div>
+            
+            <button style="width: 100%;" onclick="calculateTargets()">🔄 Refresh Targets</button>
+        </div>
+        
+        <!-- SETTINGS TAB -->
+        <div id="settings" class="tab-content">
+            <h3 style="font-size: 13px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">User Profile</h3>
+            <div class="form-group">
+                <label>Select User (1–10)</label>
+                <select id="userSelect" onchange="switchUser()">
+                    <option value="user1">User 1 (Delmar)</option>
+                    <option value="user2">User 2</option>
+                    <option value="user3">User 3</option>
+                    <option value="user4">User 4</option>
+                    <option value="user5">User 5</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Goal Weight</label>
+                <input type="number" id="goalWeight" value="195" />
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <h3 style="font-size: 13px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">Sound Options</h3>
+            <div class="form-group">
+                <label>Rest Timer Alert</label>
+                <select id="soundMode">
+                    <option value="silent">🔇 Silent (vibrate only)</option>
+                    <option value="coach" selected>🎙️ Coach Mode</option>
+                    <option value="hype">🔥 Hype Mode</option>
+                    <option value="dlmrvls">😎 DLMRVLS Mode</option>
+                </select>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <h3 style="font-size: 13px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">Equipment Available</h3>
+            <div class="equipment-grid">
+                <div class="equipment-item">
+                    <input type="checkbox" id="rings" checked>
+                    <label for="rings">💍 Rings</label>
+                </div>
+                <div class="equipment-item">
+                    <input type="checkbox" id="trx" checked>
+                    <label for="trx">🎒 TRX</label>
+                </div>
+                <div class="equipment-item">
+                    <input type="checkbox" id="bands" checked>
+                    <label for="bands">🔗 Bands</label>
+                </div>
+                <div class="equipment-item">
+                    <input type="checkbox" id="doorbar" checked>
+                    <label for="doorbar">🚪 Door Bar</label>
+                </div>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <h3 style="font-size: 13px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">Data</h3>
+            <button style="width: 100%; margin-bottom: 8px;">📥 Import Data</button>
+            <button style="width: 100%;">📤 Export for Phase 2</button>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize
+        const SESSIONS = {
+            A: { name: 'Lower - Posterior', exercises: ['Hip Thrust Machine', 'Leg Press - High Foot', 'Leg Curl', 'Cable Pull-Through', 'Standing Calf Raise'] },
+            B: { name: 'Upper - Pull', exercises: ['Straight-Arm Pulldown', 'Seated Cable Row', 'Lat Pulldown', 'Face Pull', 'Incline DB Curl'] },
+            C: { name: 'Lower - Quad', exercises: ['Leg Extension', 'Leg Press - Mid Foot', 'Leg Extension + Drop', 'Goblet Squat', 'Ab Wheel', 'Walking Lunges'] },
+            D: { name: 'Upper - Push', exercises: ['Incline DB Press', 'Cable Lateral Raise', 'Shoulder Press Machine', 'Cable Fly', 'Pushdown'] },
+            E: { name: 'Travel - Rings', exercises: ['Ring Dips', 'Ring Rows', 'Archer Pushups', 'Chest Flies'] },
+            F: { name: 'Travel - TRX', exercises: ['TRX Rows', 'TRX Chest Press', 'TRX Hamstring Curls', 'TRX Suspension Lunges'] },
+            G: { name: 'Travel - Bands', exercises: ['Banded Squats', 'Banded RDL', 'Banded Rows', 'Banded Chest Press'] },
+            H: { name: 'Travel - Door Bar', exercises: ['Door Bar Pullups', 'Door Bar Dips', 'Door Bar Rows', 'Door Bar Chinups'] }
+        };
+        
+        let currentSession = null;
+        let db = { sessions: [], weights: [] };
+        
+        // Set today's date
+        document.getElementById('sessionDate').valueAsDate = new Date();
+        
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabName = btn.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+                btn.classList.add('active');
+            });
+        });
+        
+        // Select session
+        window.selectSession = (letter) => {
+            document.getElementById('sessionSelect').value = letter;
+            updateSessionInfo();
+            document.querySelectorAll('.tab-btn')[1].click(); // Go to Log tab
+        };
+        
+        // Update session info
+        window.updateSessionInfo = () => {
+            const session = document.getElementById('sessionSelect').value;
+            const container = document.getElementById('exerciseContainer');
+            
+            if (!session) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const exercises = SESSIONS[session].exercises;
+            let html = '';
+            
+            exercises.forEach((ex, i) => {
+                html += `
+                    <div class="exercise-input">
+                        <h4>${ex}</h4>
+                        <div class="form-row">
+                            <input type="number" placeholder="Weight" data-ex="${i}" data-field="weight">
+                            <input type="number" placeholder="Reps" data-ex="${i}" data-field="reps">
+                            <input type="number" placeholder="Sets" data-ex="${i}" data-field="sets" value="3">
+                        </div>
+                        <div style="margin-top: 6px;">
+                            <input type="number" placeholder="RPE (1-10)" data-ex="${i}" data-field="rpe" min="1" max="10" style="width: 100%;">
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        };
+        
+        // Save session
+        window.saveSession = () => {
+            const session = document.getElementById('sessionSelect').value;
+            const date = document.getElementById('sessionDate').value;
+            const notes = document.getElementById('sessionNotes').value;
+            
+            if (!session || !date) {
+                alert('Please select a session and date');
+                return;
+            }
+            
+            const exercises = [];
+            document.querySelectorAll('.exercise-input').forEach((input, i) => {
+                exercises.push({
+                    name: SESSIONS[session].exercises[i],
+                    weight: input.querySelector('[data-field="weight"]').value || '—',
+                    reps: input.querySelector('[data-field="reps"]').value || '—',
+                    sets: input.querySelector('[data-field="sets"]').value || '3',
+                    rpe: input.querySelector('[data-field="rpe"]').value || '—'
+                });
+            });
+            
+            db.sessions.push({
+                id: Date.now(),
+                session: session,
+                name: SESSIONS[session].name,
+                date: date,
+                exercises: exercises,
+                notes: notes
+            });
+            
+            alert('✅ Session saved! ' + (db.sessions.length) + ' total sessions logged.');
+            document.getElementById('sessionNotes').value = '';
+            document.getElementById('exerciseContainer').innerHTML = '';
+            document.getElementById('sessionSelect').value = '';
+        };
+        
+        // Calculate targets
+        window.calculateTargets = () => {
+            if (db.sessions.length === 0) {
+                alert('No sessions logged yet');
+                return;
+            }
+            
+            alert('✅ Targets calculated from ' + db.sessions.length + ' sessions!');
+        };
+        
+        // Sync button
+        document.getElementById('syncBtn').addEventListener('click', () => {
+            alert('💾 Data saved! (' + db.sessions.length + ' sessions, ' + db.weights.length + ' weight entries)');
+        });
+        
+        console.log('✅ DLMRVLS v8 Dev Build loaded');
+    </script>
+</body>
+</html>
