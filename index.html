@@ -494,6 +494,7 @@ const SESSION_NAMES = { A:'Lower — Posterior', B:'Upper — Pull', C:'Lower �
 let DB = { sessions:[], weights:[] };
 let timerInterval=null, timerSeconds=0, timerTotal=0;
 const CIRCUM=553;
+const VOICE_LINES = { coach:'Rest over. Get back to work.', hype:"Let's go! Time to move!", dlmrvls:'Delmarvelous. Back to work.' };
 let currentVoice = 'coach';
 let equipment = { rings:true, bar:true, bands:true, trx:false };
 
@@ -501,11 +502,11 @@ let equipment = { rings:true, bar:true, bands:true, trx:false };
 
 function saveSettings() {
   currentVoice = document.getElementById('setting-voice').value;
-  sessionStorage.setItem('dlmrvls_voice', currentVoice);
+  localStorage.setItem('dlmrvls_voice', currentVoice);
 }
 
 function loadSettings() {
-  const v = sessionStorage.getItem('dlmrvls_voice') || 'coach';
+  const v = localStorage.getItem('dlmrvls_voice') || 'coach';
   currentVoice = v;
   const sel = document.getElementById('setting-voice');
   if (sel) sel.value = v;
@@ -516,11 +517,11 @@ function toggleEquip(key) {
   const el = document.getElementById('equip-'+key);
   el.classList.toggle('checked', equipment[key]);
   el.querySelector('.equip-check').textContent = equipment[key] ? '✓' : '';
-  sessionStorage.setItem('dlmrvls_equip', JSON.stringify(equipment));
+  localStorage.setItem('dlmrvls_equip', JSON.stringify(equipment));
 }
 
 function loadEquip() {
-  const saved = sessionStorage.getItem('dlmrvls_equip');
+  const saved = localStorage.getItem('dlmrvls_equip');
   if (saved) {
     try { equipment = JSON.parse(saved); } catch(e) {}
   }
@@ -541,8 +542,7 @@ function testVoice() {
     toast(v === 'silent' ? 'Vibrating ✓' : 'Sound off');
     return;
   }
-  const lines = { coach:'Rest over. Get back to work.', hype:"Let's go! Time to move!", dlmrvls:'Delmarvelous. Back to work.' };
-  speakAlert(lines[v]);
+  speakAlert(VOICE_LINES[v]);
 }
 
 function forceSync() {
@@ -579,9 +579,8 @@ function startTimer(seconds, exName) {
       document.getElementById('ring-prog').className = 'ring-prog done-ring';
       document.getElementById('rest-go-btn').style.display = 'inline-block';
       if ('vibrate' in navigator) navigator.vibrate([200,100,200]);
-      const voiceLines = { coach:'Rest over. Get back to work.', hype:"Let's go! Time to move!", dlmrvls:'Delmarvelous. Back to work.' };
-      if (currentVoice !== 'off' && currentVoice !== 'silent' && voiceLines[currentVoice]) {
-        speakAlert(voiceLines[currentVoice]);
+      if (currentVoice !== 'off' && currentVoice !== 'silent' && VOICE_LINES[currentVoice]) {
+        speakAlert(VOICE_LINES[currentVoice]);
       }
     }
   }, 1000);
@@ -672,7 +671,7 @@ function tog(cardId, sessionId) {
   if (!wasOpen) renderExercises(sessionId);
 }
 function getLastSession(sessionId) {
-  return (DB.sessions||[]).find(s => s.workout===sessionId) || null;
+  return (DB.sessions||[]).findLast(s => s.workout===sessionId) || null;
 }
 
 // ─── OVERLOAD LOGIC ───────────────────────────────────────────────────────────
