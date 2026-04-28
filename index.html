@@ -671,7 +671,7 @@ function tog(cardId, sessionId) {
   if (!wasOpen) renderExercises(sessionId);
 }
 function getLastSession(sessionId) {
-  return (DB.sessions||[]).findLast(s => s.workout===sessionId) || null;
+  return (DB.sessions||[]).find(s => s.workout===sessionId) || null;
 }
 
 // ─── OVERLOAD LOGIC ───────────────────────────────────────────────────────────
